@@ -6,10 +6,11 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            Text(isAppLocked ? "Application locked" : "Application unlocked")
+            Text(isAppLocked ? "Application locked" : "Application unlocked").font(.title)
             ZStack {
                 Circle().frame(maxWidth: 135).foregroundColor(isAppLocked ? .red : .green)
                 Circle().frame(maxWidth: 130).foregroundColor(.white)
+                Image(isAppLocked ? "locked" :"unlocked")
                 Image(systemName: isAppLocked ? "lock" :"lock.open").font(.largeTitle)
             }
             
