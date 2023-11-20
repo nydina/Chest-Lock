@@ -1,21 +1,44 @@
-//
-//  ContentView.swift
-//  Chest Lock
-//
-//  Created by Dina RAZAFINDRATSIRA on 20/11/2023.
-//
-
 import SwiftUI
+import LocalAuthentication
 
 struct ContentView: View {
+    @State private var isAppLocked = true
+
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+            if isAppLocked {
+                Button("Open") {
+                    authenticate()
+                }
+            } else {
+                Button("Lock") {
+                    isAppLocked = true
+                }
+            }
         }
         .padding()
+    }
+
+    func authenticate() {
+        let context = LAContext()
+
+        var error: NSError?
+
+        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
+            let reason = "Authenticate to unlock the app"
+            context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) { success, authenticationError in
+                DispatchQueue.main.async {
+                    if success {
+                        // Authentication successful, unlock the app
+                        isAppLocked = false
+                    } else {
+                        print("Authentication failed")
+                    }
+                }
+            }
+        } else {
+            print("Biometric authentication not available")
+        }
     }
 }
 
